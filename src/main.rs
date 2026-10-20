@@ -1,3 +1,5 @@
+use std::{env, fs};
+
 fn draw(board: &[[i32; 9]; 9]) {
     for i in 0..9{
         if i % 3 == 0{
@@ -96,8 +98,7 @@ fn solve(board: &mut [[i32; 9]; 9]) -> bool{
     }
 }
 
-fn main() {
-    
+fn  read_file(filename: &str) -> [[i32; 9];9]{
 
     let mut board = [
         [3,0,8,0,0,0,0,9,0],
@@ -110,6 +111,29 @@ fn main() {
         [0,0,6,0,5,0,0,0,0],
         [5,0,0,4,7,1,0,0,3]
     ];
+
+    let content = fs::read_to_string(filename)
+        .expect("Failed to read file");
+
+    let mut i = 0;
+    for line in content.lines() {
+        let mut j = 0;
+        for num in line.split(","){
+
+            board[i][j] = num.parse().unwrap();
+            j = j + 1;
+        }
+        i = i + 1;
+    }
+
+
+    board
+}
+
+fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    let mut board = read_file(args[1].as_str());
 
     solve(&mut board);
     draw(&board);
